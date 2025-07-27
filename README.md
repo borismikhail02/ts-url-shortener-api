@@ -217,13 +217,6 @@ npx prisma migrate dev
 
 ---
 
-## Future Improvements
-
-- Add user accounts and URL management
-- Track and show visit statistics
-
----
-
 ## Author
 
 
