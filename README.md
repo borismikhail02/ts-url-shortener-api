@@ -22,7 +22,8 @@ A simple RESTful API built with Node.js, TypeScript, and Express that allows use
      {
        "originalUrl": "<long URL>",
        "shortCode": "<unique short code>",
-       "createdAt": "<ISO date>"
+       "createdAt": "<ISO date>",
+       "expiresAt": "<ISO date>"
      }
      ```
 
@@ -32,7 +33,9 @@ A simple RESTful API built with Node.js, TypeScript, and Express that allows use
 2. **Redirect to Original URL**
    - **Endpoint:** `GET /:shortCode`
    - **Behavior:** Redirects to the original URL mapped to the given short code.
-   - **Error:** Returns a `404` code if the short code does not exist.
+   - **Errors:** 
+      - Returns a `404` code if the short code does not exist.
+      - Returns a `410` code if the short code has expired.
 
 3. **List all Generated Mappings**
    - **Endpoint:** `GET /admin/mappings`
@@ -43,12 +46,14 @@ A simple RESTful API built with Node.js, TypeScript, and Express that allows use
        {
          "originalUrl": "<long URL 1>",
          "shortCode": "<unique short code 1>",
-         "createdAt": "<ISO date>"
+         "createdAt": "<ISO date>",
+         "expiresAt": "<ISO date>"
        },
        {
          "originalUrl": "<long URL 2>",
          "shortCode": "<unique short code 2>",
-         "createdAt": "<ISO date>"
+         "createdAt": "<ISO date>",
+         "expiresAt": "<ISO date>"
        },
      ]
      ```
@@ -144,11 +149,48 @@ npx prisma migrate dev
   - GET `http://localhost:3000/abc123`
   - Redirects to `https://example.com`
 
+- **List all Mappings**
+  - GET `http://localhost:3000/admin/mappings`
+  - Response:
+    ```sh
+    [
+       {
+         "originalUrl": "https://example.com",
+         "shortCode": "abc123",
+         "createdAt": "2025-01-01T18:12:30.470Z",
+         "expiresAt": "2025-01-01T18:12:35.470Z"
+       },
+       {
+         "originalUrl": "https://testing.com",
+         "shortCode": "cba321",
+         "createdAt": "2025-02-02T18:14:00.470Z",
+         "expiresAt": "2025-02-02T18:14:05.470Z"
+       }
+     ]
+    ```
+
+- **Delete a Mapping**
+  - DELETE `http://localhost:3000/admin/mappings/abc123`
+  - Response:
+    ```sh
+    {
+        "message": "Mapping: 'abc123' deleted successfully."
+    }
+    ```
+    
+- **Delete all Mappings**
+  - DELETE `http://localhost:3000/admin/mappings/all`
+  - Response:
+    ```sh
+    {
+        "message": "Mapping: 'all' deleted successfully."
+    }
+    ```
+
 ---
 
 ## Future Improvements
 
-- Add URL expiration feature
 - Add user accounts and URL management
 - Track and show visit statistics
 
