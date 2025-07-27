@@ -28,3 +28,19 @@ export const redirectToOriginalUrl = async (request: Request, response: Response
 
     response.redirect(originalUrl);
 };
+
+export const getAllMappings = async (request: Request, response: Response) => {
+    const mappings = await urlService.getAllMappings();
+    response.json(mappings);
+};
+
+export const deleteMapping = async (request: Request, response: Response) => {
+    const { shortCode } = request.params;
+    const deleted = await urlService.deleteMapping(shortCode);
+
+    if (!deleted) {
+        return response.status(404).json({ error: "Short URL not found." });
+    }
+
+    response.json({ message: `Mapping: '${shortCode}' deleted successfully.` });
+};
