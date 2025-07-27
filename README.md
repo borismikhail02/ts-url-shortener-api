@@ -88,6 +88,34 @@ A simple RESTful API built with Node.js, TypeScript, and Express that allows use
 
 ---
 
+## Database Schema
+
+Using **SQLite** via **Prisma ORM**.
+
+### `UrlMapping` Table
+-*Stores generated shortened maps for given URLs.*
+
+| Field         | Type       | Notes                                |
+|---------------|------------|---------------------------------------|
+| `id`          | `Int`      | Primary key (auto-increment)          |
+| `shortCode`   | `String`   | Unique short code                     |
+| `originalUrl` | `String`   | The full/original URL                 |
+| `createdAt`   | `DateTime` | When the URL was shortened            |
+| `expiresAt`   | `DateTime` | When the short link becomes invalid   |
+
+### `UrlVisit` Table
+-*Stores tracked visits with relevant information, related (many->one) to UrlMapping table via shortCode.*
+
+| Field       | Type       | Notes                                      |
+|-------------|------------|---------------------------------------------|
+| `id`        | `Int`      | Primary key (auto-increment)                |
+| `shortCode` | `String`   | Foreign key to `UrlMapping.shortCode`       |
+| `userAgent` | `String`   | Visitor’s browser or platform info          |
+| `ipAddress` | `String`   | Visitor’s IP address                        |
+| `visitedAt` | `DateTime` | Timestamp of when the URL was visited       |
+
+---
+
 ## Tech Stack
 
 - **Node.js** - Runtime environment for executing JavaScript on the server

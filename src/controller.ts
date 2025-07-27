@@ -28,6 +28,10 @@ export const redirectToOriginalUrl = async (request: Request, response: Response
     if (originalUrl === "expired") {
         return response.status(410).json({ error: "Short URL has expired." });
     }
+    
+    if (await urlService.trackVisit(shortCode, request) === "tracking-fail") {
+        console.error(`Failed to track URL visit for ${shortCode}`);
+    }
 
     response.redirect(originalUrl);
 };

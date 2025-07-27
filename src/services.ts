@@ -1,4 +1,5 @@
 import { PrismaClient } from "./generated/prisma";
+import { Request } from "express";
 
 const prisma = new PrismaClient();
 const EXPIRATION_TIME_MS = 1000 * 60 * 5 // 5 minutes
@@ -63,4 +64,15 @@ export class UrlService {
             return false;
         }
     };
+
+    async trackVisit(shortCode: string, request: Request) {
+        if (!shortCode || !request) return "tracking-fail";
+        await prisma.urlVisit.create({
+            data: {
+                shortCode,
+                userAgent: request.headers['user-agent'],
+                ipAddress: request.ip
+            }
+        });
+    }
 }
