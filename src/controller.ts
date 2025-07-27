@@ -25,6 +25,9 @@ export const redirectToOriginalUrl = async (request: Request, response: Response
     if (!originalUrl) {
         return response.status(404).json({ error: "Short URL not found." });
     }
+    if (originalUrl === "expired") {
+        return response.status(410).json({ error: "Short URL has expired." });
+    }
 
     response.redirect(originalUrl);
 };

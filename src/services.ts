@@ -1,6 +1,8 @@
 import { PrismaClient } from "./generated/prisma";
 
 const prisma = new PrismaClient();
+const EXPIRATION_TIME_MS = 1000 * 60 * 5 // 5 minutes
+//const EXPIRATION_TIME_MS = 1000 * 60 * 60 * 24 // 24 hours
 
 export class UrlService {
 
@@ -10,12 +12,14 @@ export class UrlService {
 
     async createMapping(originalUrl: string) {
         const shortCode = this.generateShortCode();
+        const expiresAt = new Date(Date.now() + EXPIRATION_TIME_MS);
         
         // create new mapping direct in Prisma db
         const newMapping = await prisma.urlMapping.create({
             data: {
                 originalUrl,
-                shortCode
+                shortCode,
+                expiresAt
             }
         });
 
@@ -29,7 +33,16 @@ export class UrlService {
             where: { shortCode }
         });
 
-        return mapping?.originalUrl;
+        if (!mapping) return null;
+
+        if (new Date() > new Date(mapping.expiresAt)) {
+            await prisma.urlMapping.delete({
+                where:  { shortCode }
+            });
+            return "expired";
+        }
+
+        return mapping.originalUrl;
     };
 
     async getAllMappings() {

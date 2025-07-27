@@ -19,4 +19,5 @@ model UrlMapping {
   shortCode   String      @unique
   originalUrl String
   createdAt   DateTime    @default(now())
+  expiresAt   DateTime
 }
