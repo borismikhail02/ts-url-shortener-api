@@ -34,10 +34,51 @@ A simple RESTful API built with Node.js, TypeScript, and Express that allows use
    - **Behavior:** Redirects to the original URL mapped to the given short code.
    - **Error:** Returns a `404` code if the short code does not exist.
 
-3. **Data Storage**
-   - Currently stored in-memory.
+3. **List all Generated Mappings**
+   - **Endpoint:** `GET /admin/mappings`
+   - **Response:** JSON  
+     
+     ```sh
+     [
+       {
+         "originalUrl": "<long URL 1>",
+         "shortCode": "<unique short code 1>",
+         "createdAt": "<ISO date>"
+       },
+       {
+         "originalUrl": "<long URL 2>",
+         "shortCode": "<unique short code 2>",
+         "createdAt": "<ISO date>"
+       },
+     ]
+     ```
 
-4. **Error Handling**
+ 4. **Delete a Generated Mapping**
+   - **Endpoint:** `DELETE /admin/mappings/:shortCode`
+   - **Response:** JSON  
+     
+     ```sh
+     {
+         "message": "Mapping: '<shortCode>' deleted successfully."
+     }
+     ```
+
+   - **Error:** Returns a `404` code if the short code does not exist.
+
+ 5. **Delete all Generated Mappings**
+   - **Endpoint:** `DELETE /admin/mappings/all`
+   - **Response:** JSON  
+     
+     ```sh
+     {
+         "message": "Mapping: 'all' deleted successfully."
+     }
+     ```
+
+6. **Data Storage**
+   - Stores mappings locally using SQLite database.
+
+7. **Error Handling**
    - Handles invalid input and missing short codes gracefully with relevant HTTP status codes.
 
 ---
@@ -46,7 +87,9 @@ A simple RESTful API built with Node.js, TypeScript, and Express that allows use
 
 - **Node.js** - Runtime environment for executing JavaScript on the server
 - **TypeScript** - Strongly-typed superset of JavaScript
-- **Express** - Web application framework for Node.js, used to build server-side applications and APIs with js/ts.
+- **Express** - Web framework for building API routes in Node.js
+- **SQLite** - Lightweight SQL database for local development
+- **Prisma** - Modern ORM for database querying and interaction
 
 ---
 
@@ -56,6 +99,14 @@ A simple RESTful API built with Node.js, TypeScript, and Express that allows use
 
 ```sh
 npm install
+```
+
+### Database Setup
+
+Before running the application, setup the SQLite database:
+```sh
+npx prisma generate
+npx prisma migrate dev
 ```
 
 ### Running the App
@@ -97,7 +148,6 @@ npm install
 
 ## Future Improvements
 
-- Save mappings to a database or file
 - Add URL expiration feature
 - Add user accounts and URL management
 - Track and show visit statistics
